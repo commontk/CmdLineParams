@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(CLIAppication)
+project(CmdLineParams)
 
-add_executable(CLIAppicationTest
+add_executable(${PROJECT_NAME}Test
  main.cpp
  ctkCmdLineApplication.hxx
  ctkParam.hxx
