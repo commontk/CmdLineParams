@@ -35,7 +35,7 @@ template <> inline bool stringTo<>(const std::string& in)
 template <typename T> inline std::string vectortoString(const std::vector<T>& in, const std::string& delim=" ")
 {
   if (in.empty()) return std::string();
-  std::vector<T>::const_iterator it=in.begin();
+  typename std::vector<T>::const_iterator it=in.begin();
   std::string ret=ctkCLI::toString(*it);
   for (++it;it!=in.end();++it)
     ret+=delim+ctkCLI::toString(*it);

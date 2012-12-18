@@ -204,7 +204,7 @@ class ctkParam##TYPE : public ctkParam<BASE> {                                 \
    if (!app.getParam(section,key))                                    \
     declareType();                                                 \
   }                                                                      \
-  ctkParam& operator=(const BASE& v) { return setValue(v); }             \
+  ctkParam<BASE>& operator=(const BASE& v) { return setValue(v); }             \
   operator BASE() const { return getValue(); }                           \
   void declareType() {                                                   \
    app.setParam(section,key,new ctkCLI::ctkParamData##TYPE());        \

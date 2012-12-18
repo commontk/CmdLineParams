@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <typeinfo>
 
 #include "StringUtil.hxx"
 
@@ -43,6 +44,37 @@
 #define CTK_PARAM_FOR_SPECIAL_TYPE(STR,TYPE) if (type==STR) param=new TYPE;
 
 namespace ctkCLI {
+
+/**
+ * \ingroup Command Line Module
+ *
+ * This templated function associates c++ types with strings.
+ * Specializations provided:
+ * - boolean
+ * - integer
+ * - float
+ * - double
+ * - string
+ * - integer-vector
+ * - float-vector
+ * - double-vector
+ * - string-vector
+ *
+ **/
+template <typename T> inline std::string getTypeName() {
+ return typeid(T).name();
+}
+
+#define CTK_DEFINE_TYPE_NAME_STRING(TYPE,STR)  template<> inline std::string getTypeName<TYPE>() {return STR;}
+CTK_DEFINE_TYPE_NAME_STRING(bool,"boolean");
+CTK_DEFINE_TYPE_NAME_STRING(int,"integer");
+CTK_DEFINE_TYPE_NAME_STRING(float,"float");
+CTK_DEFINE_TYPE_NAME_STRING(double,"double");
+CTK_DEFINE_TYPE_NAME_STRING(std::string,"string");
+CTK_DEFINE_TYPE_NAME_STRING(std::vector<int>,"integer-vector");
+CTK_DEFINE_TYPE_NAME_STRING(std::vector<float>,"float-vector");
+CTK_DEFINE_TYPE_NAME_STRING(std::vector<double>,"double-vector");
+CTK_DEFINE_TYPE_NAME_STRING(std::vector<std::string>,"string-vector");
 
  /**
   * \ingroup Command Line Module
@@ -100,37 +132,6 @@ namespace ctkCLI {
   virtual std::string getString() const { return toString(value); }
  };
 
- /**
-  * \ingroup Command Line Module
-  *
-  * This templated function associates c++ types with strings.
-  * Specializations provided:
-  * - boolean
-  * - integer
-  * - float
-  * - double
-  * - string
-  * - integer-vector
-  * - float-vector
-  * - double-vector
-  * - string-vector
-  *
-  **/
- template <typename T> inline std::string getTypeName() {
-  return typeid(T).name();
- }
-
- #define CTK_DEFINE_TYPE_NAME_STRING(TYPE,STR)  template<> inline std::string getTypeName<TYPE>() {return STR;}
- CTK_DEFINE_TYPE_NAME_STRING(bool,"boolean");
- CTK_DEFINE_TYPE_NAME_STRING(int,"integer");
- CTK_DEFINE_TYPE_NAME_STRING(float,"float");
- CTK_DEFINE_TYPE_NAME_STRING(double,"double");
- CTK_DEFINE_TYPE_NAME_STRING(std::string,"string");
- CTK_DEFINE_TYPE_NAME_STRING(std::vector<int>,"integer-vector");
- CTK_DEFINE_TYPE_NAME_STRING(std::vector<float>,"float-vector");
- CTK_DEFINE_TYPE_NAME_STRING(std::vector<double>,"double-vector");
- CTK_DEFINE_TYPE_NAME_STRING(std::vector<std::string>,"string-vector");
-
 } // namespace ctkCLI
 
 /**
@@ -163,7 +164,7 @@ private:
  /// Holds values of all parameters referenced by section and key
  std::map<std::string, std::map<std::string, ctkCLI::ctkParamDataInterface * > > param;
  /// Holds section/key pairs for specific command line flags. Also includes "0", "1" etc. for indexed parameters
- std::map<std::string,std::pair<std::string,std::string>> commandLineFlags;
+ std::map<std::string,std::pair<std::string,std::string> > commandLineFlags;
 
   /**
   * This is the singleton instance of ctkCmdLineApplication.
@@ -413,7 +414,7 @@ std::string ctkCmdLineApplication::getXMLDescription() const
 {
  // order of slicer tags in an XML file (whatever the reason that they require this ordering)
  const int num_app_tag=8;
- char *app_tags[]={
+ const char *app_tags[]={
    "category",
    "title",
    "description",
